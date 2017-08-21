@@ -4,7 +4,7 @@ import ResourceDetail from './ResourceDetail';
 import CreateForm from './CreateForm';
 import 'bootstrap/dist/css/bootstrap.css'
 
-
+const LOCAL_STORAGE_KEY = 'resources';
 
 
 //stores resources in an array in the app state
@@ -12,9 +12,13 @@ class Adminv2ContainerComponent extends Component {
 	constructor() {
 		super();
 
+//we get the locol storage data out with a getItem function and put it in aconstant here.
+const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);		
+
 		this.state = {
 			showCreate: false,
-			resources: [], //this is the array property in the app state that stores the resources
+			//Checks to see if we have data in localStorage and if there is is parses to an array of objects. This is the array property in the app state that stores the resources
+			resources: localStorageResources ? JSON.parse(localStorageResources) : [], 
 			selectedResource: null //A new state property is added here to keep track of selected resource
 		};
 	}
@@ -39,6 +43,8 @@ class Adminv2ContainerComponent extends Component {
  	this.setState({
  		resources: newResources
  	});
+
+ 	window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newResources));
  }
 
  handleSelectResource(resource) {

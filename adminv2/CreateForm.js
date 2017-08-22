@@ -4,16 +4,16 @@ import * as React from 'react';
 class CreateForm extends React.Component {
 	//Storing the initial state with a constructor
 	//Storing the value of each form field which will initally be an empty string
-	//Then add a vale to each input for the appropiate property of the state
+	//Then add a value to each input for the appropiate property of the state
 	constructor() {
 		super()
 
 		this.state = {
-			id: new Date().getTime(),
+			
 			name: '',
 			specifics: '',
 			instructions: '',
-			create: false //this boolean exists for showing the user a message after the form is submitted
+			created: false //this boolean exists for showing the user a message after the form is submitted
 		};
 	}
 
@@ -33,7 +33,7 @@ class CreateForm extends React.Component {
 //Handling the submit event
 	handleSubmit(event) {
 		event.preventDefault(); // calling prvent default to prevent the form's default submit action which would cause the page to reload
-//Again avoiding using this.state for every value input with es6 desructured cont
+//Again avoiding using this.state for every value input with es6 desructured const
 		const { name, specifics, instructions } = this.state;
 		this.props.onSubmit(name, specifics, instructions);
 		//calling the resetForm method here in the handleSubmit method
@@ -74,7 +74,7 @@ resetForm() {
 		 </div>
 
 		 <div className='form-group'>
-		  <label htmlFor='specifics'>Resource name:</label>
+		  <label htmlFor='specifics'>Specifics:</label>
 		 <textarea
 		 type='text'
 		 className='form-control'

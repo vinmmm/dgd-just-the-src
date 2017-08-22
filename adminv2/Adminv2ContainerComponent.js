@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ResourceList from './ResourceList';
 import ResourceDetail from './ResourceDetail';
 import CreateForm from './CreateForm';
-import 'bootstrap/dist/css/bootstrap.css'
+
 
 const LOCAL_STORAGE_KEY = 'resources';
 
@@ -22,7 +22,7 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
 			selectedResource: null //A new state property is added here to keep track of selected resource
 		};
 	}
-//This is a method with a booolean to show the form...is the butoon's onClick handler
+//This is a method with a booolean to show the form...is the button's onClick handler
  showCreate() {
  	this.setState({ showCreate: true });
  }
@@ -35,16 +35,13 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  	//Always operate on the state immutyably. Mutating the state directly can cause hard to track down bugs as React relys on setState to inform it when changes occur
  	const newResources = this.state.resources.concat({ 
  		//the variables and the keys are the same name and es6 assumes you will want the variable that matches the key so you dont need both or the colon
+ 		 id: new Date().getTime(),
  		 name,
  		 specifics,
  		 instructions
  	});
 
- 	this.setState({
- 		resources: newResources
- 	});
-
- 	window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newResources));
+ this.updateResources(newResources);
  }
 
  handleSelectResource(resource) {
@@ -53,14 +50,32 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  		showCreate: false
  	});
  }
-	
+
+ //Adding function to delete the resource and pass it in as the onDelete callback. 
+ //Not mutating the component state by using the filte method
+ handleDeleteResource(resourceToDelete) {
+ 	const newResources = this.state.resources.filter(resource => resource !== resourceToDelete);
+ 	 this.updateResources(newResources);
+
+ 	 this.setState({
+ 	 	selectedResource: null
+ 	 });
+ }
+
+updateResources(newResources) {
+	this.setState({
+		resources: newResources
+	});
+
+	window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newResources));
+}	
 	render() {
 		
 		return (
 			
 			<div className='container'>
 			<h1>Hi, I'm the Adminv2ContainerComponent Component</h1>
-			<h3>This is the Resource Database</h3>
+			
 			
 
 			 <div className='row'>
@@ -85,7 +100,9 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
 			   <div className='col-xs-8'>
 			  { this.state.showCreate 
 			  	? <CreateForm onSubmit={this.handleCreateResource.bind(this)}/> 
-			  	: <ResourceDetail resource={this.state.selectedResource} /> } 
+			  	: <ResourceDetail resource={this.state.selectedResource}
+			  	                  onDelete={this.handleDeleteResource.bind(this)} 
+			  	                  /> } 
 			   </div>
 
 			

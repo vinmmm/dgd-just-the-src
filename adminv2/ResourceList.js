@@ -14,7 +14,7 @@ const ResourceList = ({ resources, onSelectResource }) => (
 ResourceList.prototypes = {
 	resources: React.PropTypes.array.isRequired,
 	// for selection of created resources
-	onSelectResource: React.PropTypes.func.isRequired,
+	onSelectResource: React.PropTypes.func.isRequired
 };
 
 export default ResourceList;

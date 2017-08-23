@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ResourceList from './ResourceList';
 import ResourceDetail from './ResourceDetail';
 import CreateForm from './CreateForm';
+import SearchBox from './SearchBox';
 
 
 const LOCAL_STORAGE_KEY = 'resources';
@@ -19,7 +20,10 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
 			showCreate: false,
 			//Checks to see if we have data in localStorage and if there is is parses to an array of objects. This is the array property in the app state that stores the resources
 			resources: localStorageResources ? JSON.parse(localStorageResources) : [], 
-			selectedResource: null //A new state property is added here to keep track of selected resource
+			//A new state property is added here to keep track of selected resource
+			selectedResource: null,
+			search: ''
+
 		};
 	}
 //This is a method with a booolean to show the form...is the button's onClick handler
@@ -27,21 +31,21 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  	this.setState({ showCreate: true });
  }
 
- //This is the event handler for the onSubmit prop
- //This handleCreateResource method adds the name, specifics and resource to the resources array in the app state
- handleCreateResource(name, specifics, instructions) {
- 	//console.log(name, specifics, instructions);
+ //This is the event handler for the onSubmit prop that handles the creation on the new resource
+ //This handleCreateResource method adds the name, specifics and resource to the resources array in the app state using the arrays concat method
+ handleCreateResource(name, specifics, pairs) {
+ 	
 //using the concat method of this.state.resources to not mutate the state directly but to create a new array with the resource object added to the end
- 	//Always operate on the state immutyably. Mutating the state directly can cause hard to track down bugs as React relys on setState to inform it when changes occur
+
  	const newResources = this.state.resources.concat({ 
- 		//the variables and the keys are the same name and es6 assumes you will want the variable that matches the key so you dont need both or the colon
+ 		
  		 id: new Date().getTime(),
  		 name,
  		 specifics,
- 		 instructions
+ 		 pairs
  	});
 
- this.updateResources(newResources);
+ this.updateResources(newResources); //calling updateResources method being called  handleCreateResource
  }
 
  handleSelectResource(resource) {
@@ -52,15 +56,27 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  }
 
  //Adding function to delete the resource and pass it in as the onDelete callback. 
- //Not mutating the component state by using the filte method
+ //Not mutating the component state by using the filter method
+ //Though there are a few ways to remove items from the array without changing the original array.
+ //The filter method will run afunction against every item in the array which returns either true or false
+ //and returns a new array with the items that the function returned as false filtered out.
+ //In the method we are comparing each resource in the array against the resource we want to delete
+ //using the !== operator to see if two objects are the same and returning true if they arent the same and false if its the one we want to delete.
+ //This gives a new array with the resource in question filtered out.
  handleDeleteResource(resourceToDelete) {
  	const newResources = this.state.resources.filter(resource => resource !== resourceToDelete);
- 	 this.updateResources(newResources);
-
+ 	 this.updateResources(newResources); //calling updateResources method in handleDeleteResource 
+ 	//setting selected resource to null here to prevent deleted resources to continue to show.
  	 this.setState({
  	 	selectedResource: null
  	 });
  }
+
+handleSearchChange(search) {
+	this.setState({
+		search
+	});
+}
 
 updateResources(newResources) {
 	this.setState({
@@ -69,7 +85,15 @@ updateResources(newResources) {
 
 	window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newResources));
 }	
+	
+
+
+
 	render() {
+		const { resources, selectedResource, showCreate, search } = this.state;
+
+		const filteredResources = resources
+		.filter(resource => resource.name.toLowerCase().indexOf(search.toLowerCase()) > -1);
 		
 		return (
 			
@@ -91,16 +115,18 @@ updateResources(newResources) {
 			   >
 			   Create new resource
 			   </button>
-			   <ResourceList resources={this.state.resources} 
+			{/* Passing the handleSearchChange function to searchBox component to be called whenever the search changes */}
+			   <SearchBox onChange={this.handleSearchChange.bind(this)} />
+			   <ResourceList resources={filteredResources} //passing in the resources array specified as a required PropType in ResourceList.js 
 							 onSelectResource={this.handleSelectResource.bind(this)}			   														
 
 
 			   /> 
 			   </div>
 			   <div className='col-xs-8'>
-			  { this.state.showCreate 
+			  { showCreate 
 			  	? <CreateForm onSubmit={this.handleCreateResource.bind(this)}/> 
-			  	: <ResourceDetail resource={this.state.selectedResource}
+			  	: <ResourceDetail resource={selectedResource} //Passing the selected resource into the ResourceDetail component.
 			  	                  onDelete={this.handleDeleteResource.bind(this)} 
 			  	                  /> } 
 			   </div>

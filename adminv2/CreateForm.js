@@ -3,8 +3,7 @@ import * as React from 'react';
 
 class CreateForm extends React.Component {
 	//Storing the initial state with a constructor
-	//Storing the value of each form field which will initally be an empty string
-	//Then add a value to each input for the appropiate property of the state
+	
 	constructor() {
 		super()
 
@@ -12,13 +11,13 @@ class CreateForm extends React.Component {
 			
 			name: '',
 			specifics: '',
-			instructions: '',
+			pairs: '',
 			created: false //this boolean exists for showing the user a message after the form is submitted
 		};
 	}
 
 	//Below are event handlers to handle the change in state when text is enetred into the forms
-	//The target property of the evnt refers to the inpu node itself
+
 	handleChangeName(event) {
 		this.setState({ name: event.target.value });
 	}
@@ -27,37 +26,37 @@ class CreateForm extends React.Component {
 		this.setState({ specifics: event.target.value });
 	}
 
-	handleChangeInstructions(event) {
-		this.setState({ instructions: event.target.value });
+	handleChangePairs(event) {
+		this.setState({ pairs: event.target.value });
 	}
-//Handling the submit event
+//Handling the submit event with the handleSubmit method and callback props with the name, specifics and pairs that the user has entered into the form
 	handleSubmit(event) {
-		event.preventDefault(); // calling prvent default to prevent the form's default submit action which would cause the page to reload
+		event.preventDefault(); // calling prevent default to prevent the form's default submit action which would cause the page to reload
 //Again avoiding using this.state for every value input with es6 desructured const
-		const { name, specifics, instructions } = this.state;
-		this.props.onSubmit(name, specifics, instructions);
+		const { name, specifics, pairs } = this.state;
+		this.props.onSubmit(name, specifics, pairs);
 		//calling the resetForm method here in the handleSubmit method
 		this.resetForm();
-		//this setStae here is for showing the user a message after the form has been submitted
+		//this setState here is for showing the user a message after the form has been submitted
 		this.setState({ created: true});
 		//the ref and focus method is for refocising the curor to the name field after the form has submitted
 		this.refs.name.focus();
 	}
-//Because we control our form inputs through our component state this is all we have to do to reset the forms
-//Createing a method here to reset the forms after submit
-//This will reset the strings when this method is called from the handle submit method
+
+//This method will reset the strings when this method is called from the handle submit method
 resetForm() {
 	this.setState({
 		name: '',
 		specifics: '',
-		instructions: ''
+		pairs: ''
 	});
 }
 	render () {
-		//Avoiding using this.state with es6 desructured cont
-		const { name, specifics, instructions, created} = this.state;
+		//Avoiding using some more of this.state with an es6 desructuring const
+		const { name, specifics, pairs, created} = this.state;
 		return (
-		<form onSubmit={this.handleSubmit.bind(this)}>
+//onSubmit handler method added to the form componant for well you know.
+		<form onSubmit={this.handleSubmit.bind(this)}> 
 		{ created && <div className='alert alert-success'>Your resource was created</div> }
 		 <div>
 		 <label htmlFor='name'>Resource name:</label>
@@ -66,7 +65,7 @@ resetForm() {
 		 className='form-control'
 		 id='name'
 		 placeholder='Enter resource name'
-		 value={name}
+		 value={name} //value prop with appropriate propert of the state
 		 onChange={this.handleChangeName.bind(this)}
 		 ref='name' //this ref is here to make the cursor refocus on the name input field after the form has been submitted
 
@@ -81,22 +80,22 @@ resetForm() {
 		 id='specifics'
 		 rows='5'
 		 placeholder='Enter resource specifics'
-		 value={specifics}
+		 value={specifics} //value prop with appropriate propert of the state
 		 onChange={this.handleChangeSpecifics.bind(this)}
 
 		 />
 		 </div>
 
 		  <div className='form-group'>
-		  <label htmlFor='instructions'>Instructions:</label>
+		  <label htmlFor='pairs'>Pairs:</label>
 		 <textarea
 		 type='text'
 		 className='form-control'
 		 rows='10'
-		 id='instructions'
-		 placeholder='Enter resource instructions'
-		 value={instructions}
-		 onChange={this.handleChangeInstructions.bind(this)}
+		 id='pairs'
+		 placeholder='Enter resource pairs'
+		 value={pairs} //value prop with appropriate propert of the state
+		 onChange={this.handleChangePairs.bind(this)}
 		 />
 		 </div>
 
@@ -108,9 +107,8 @@ resetForm() {
 
 }
 
-//We need a a prop call onSubmit and its required and not optional to we use React Proptypes here
-// There are proptypes to decribe all the various types suported by react
-//You can also create custom props
+//We need a a proptype called onSubmit here and its required
+
 CreateForm.propTypes = {
 	onSubmit: React.PropTypes.func.isRequired
 };

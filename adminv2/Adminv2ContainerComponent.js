@@ -22,6 +22,7 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
 			resources: localStorageResources ? JSON.parse(localStorageResources) : [], 
 			//A new state property is added here to keep track of selected resource
 			selectedResource: null,
+			//added search property to state a empty string as we want to show all results initially
 			search: ''
 
 		};
@@ -72,6 +73,7 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  	 });
  }
 
+//The handleSearchChange method
 handleSearchChange(search) {
 	this.setState({
 		search
@@ -91,9 +93,10 @@ updateResources(newResources) {
 
 	render() {
 		const { resources, selectedResource, showCreate, search } = this.state;
-
+//The filter function here is checking to see if the search string occcurs anywhere in the resource name using the indexOf() method.
+//The sort() method is used comaparing two items to display the list of resources alphabetically.
 		const filteredResources = resources
-		.filter(resource => resource.name.toLowerCase().indexOf(search.toLowerCase()) > -1);
+		.filter(resource => resource.name.toLowerCase().indexOf(search.toLowerCase()) > -1).sort((a, b) => a.name > b.name);
 		
 		return (
 			
@@ -117,7 +120,8 @@ updateResources(newResources) {
 			   </button>
 			{/* Passing the handleSearchChange function to searchBox component to be called whenever the search changes */}
 			   <SearchBox onChange={this.handleSearchChange.bind(this)} />
-			   <ResourceList resources={filteredResources} //passing in the resources array specified as a required PropType in ResourceList.js 
+			   {/* Passing in the resources array specified as a required PropType in ResourceList.js. resources is set to filteredResources in a const  */}
+			   <ResourceList resources={filteredResources} 
 							 onSelectResource={this.handleSelectResource.bind(this)}			   														
 
 

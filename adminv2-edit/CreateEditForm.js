@@ -82,7 +82,7 @@ resetForm() {
 		const { resource } = this.props;
 		return (
 //onSubmit handler method added to the form componant for well you know.
-		<form onCreate={this.handleSubmit.bind(this)}> 
+		<form onSubmit={this.handleSubmit.bind(this)}> 
 		{ created && <div className='alert alert-success'>Your resource was created</div> }
 		 <div>
 		 <label htmlFor='name'>Resource name:</label>

@@ -62,7 +62,7 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
  		pairs
  	});
 
- 	const  newResources = resources.map(resource =>
+ 	const newResources = resources.map(resource =>
  		resource === selectedResource ? editedResource : resource
  		);
 

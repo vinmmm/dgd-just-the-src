@@ -2,7 +2,7 @@ import * as React from 'react';
 // defing the delete resource function inside the components main function that does the rendering
 	//Putting the function inside the scope of the other function to get access to the props weve just destructured
 
-
+//The onDelete and onEdit props in the buttons that are passed in to call their callback funtions are destructured and added here to the components props
 	const ResourceDetail = ({ resource, onDelete, onEdit }) => { //destructured the resource object here.
 		const confirmDelete = () => {
 			if (prompt('Are you sure you want to delete this resource?')) {

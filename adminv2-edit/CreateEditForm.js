@@ -17,14 +17,18 @@ class CreateEditForm extends React.Component {
 	}
 
 //...lifecycle method stuff here for the edit
-componantDidMount() {
+componentDidMount() {
 	this.setStateFromResource(this.props.resource);
 }
 //... some more lifecycle method stuff for the edit here
-componantWillReceiveProps(nextProps) {
+// here we can compare the props in this.props with the newer props in nextProps and then take a particular action
+//... depending on how the props have changed. Here were just calling setStateFromResource
+componentWillReceiveProps(nextProps) {
 	this.setStateFromResource(nextProps.resource);
 }
 //...lifecycle stuff here for the edit too also
+// we add the resource prop to the createEditForm's propTypes
+// we set the forms state to contain the values from a resource prop if it is passed in or default to an empty string if not
 setStateFromResource(resource) {
 	this.setState({
 		name: resource ? resource.name : '',
@@ -51,19 +55,18 @@ setStateFromResource(resource) {
 		event.preventDefault(); // calling prevent default to prevent the form's default submit action which would cause the page to reload
 //Again avoiding using this.state for every value input with es6 desructured const
 		const { name, specifics, pairs } = this.state;
-
+//This "if else" is here in the handleSubmit method to call onEdit if a resource is passed in as a prop for editing else create if we are not.
+//... there will be no success message like when resource is created just a return to the newly edited resource.
 		if (this.props.resource) {
 			this.props.onEdit(name, specifics, pairs);
 		} else {
-
-		
-		this.props.onCreate(name, specifics, pairs);
-		//calling the resetForm method here in the handleSubmit method
-		this.resetForm();
-		//this setState here is for showing the user a message after the form has been submitted
-		this.setState({ created: true});
-		//the ref and focus method is for refocising the curor to the name field after the form has submitted
-		this.refs.name.focus();
+			this.props.onCreate(name, specifics, pairs);
+			//calling the resetForm method here in the handleSubmit method
+			this.resetForm();
+			//this setState here is for showing the user a message after the form has been submitted
+			this.setState({ created: true});
+			//the ref and focus method is for refocising the curor to the name field after the form has submitted
+			this.refs.name.focus();
 		}
 
 	}
@@ -79,6 +82,7 @@ resetForm() {
 	render () {
 		//Avoiding using some more of this.state with an es6 desructuring const
 		const { name, specifics, pairs, created} = this.state;
+//these props are added here for the ternary operator in the create/edit button to determine whether to show the create button text or edit button text based on whether there are props.
 		const { resource } = this.props;
 		return (
 //onSubmit handler method added to the form componant for well you know.
@@ -106,7 +110,7 @@ resetForm() {
 		 id='specifics'
 		 rows='5'
 		 placeholder='Enter resource specifics'
-		 value={specifics} //value prop with appropriate propert of the state
+		 value={specifics} //value prop with appropriate propert of the state.
 		 onChange={this.handleChangeSpecifics.bind(this)}
 
 		 />
@@ -135,8 +139,7 @@ resetForm() {
 
 }
 
-//We need a a proptype called onSubmit here and its required
-
+//We need a a proptype called onCreate and onEdit here and its required
 CreateEditForm.propTypes = {
 	onCreate: React.PropTypes.func.isRequired,
 	onEdit: React.PropTypes.func.isRequired,

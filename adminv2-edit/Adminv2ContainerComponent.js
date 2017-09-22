@@ -5,6 +5,7 @@ import CreateEditForm from './CreateEditForm';
 import SearchBox from './SearchBox';
 
 
+
 const LOCAL_STORAGE_KEY = 'resources';
 
 
@@ -55,17 +56,21 @@ const localStorageResources = window.localStorage.getItem(LOCAL_STORAGE_KEY);
 
  handleResourceEdited(name, specifics, pairs) {
  	const { resources, selectedResource } = this.state;
-
+//Object.assign so the rources can be edited immutably.
+//The first argument to Object.assign is always an empty obect to make sure we are editing immutably and the second here is the object we want to edit.
+//...the final parameter is an object containing the keys and values we want to update.
  	const editedResource = Object.assign({}, selectedResource, {
  		name,
  		specifics,
  		pairs
  	});
-
+//we use the array's map method to swap out the object with the newly edited object with a ternary
+//... to tell the function to return the original resource or "selectedResource" in this case if unchanged or the "editedResource" if edited
+//...and create the new array "newResources"
  	const newResources = resources.map(resource =>
  		resource === selectedResource ? editedResource : resource
  		);
-
+//updating the state and local storage with the new edited arrays
  	this.updateResources(newResources);
  	this.handleSelectResource(editedResource);
  }
